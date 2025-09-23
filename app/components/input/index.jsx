@@ -19,11 +19,7 @@ export const TextInput = (props) => {
 
     return (
         <div>
-            {props.error ? (
-                <p className="text-sm mb-1 text-red-500">{props.error}</p>
-            ) : (
-                <p className="text-sm mb-1 text-gray-500">{props.label}</p>
-            )}
+            <p className="text-sm mb-1 text-gray-500">{props.label}</p>
             <input
                 onChange={onChange} // send value to hook form
                 onBlur={onBlur} // notify when input is touched/blur
@@ -39,6 +35,11 @@ export const TextInput = (props) => {
                         : `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 ${props.className}`
                 }
             />
+             {props.error ? (
+                <p className="text-sm mb-1 text-red-500">{props.error}</p>
+            ) : (
+               ''
+            )}
         </div>
     );
 };
