@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import { TextAreaInput, TextInput } from "./components/input";
-import { useForm } from "react-hook-form";
+import { TextAreaInput, TextInput } from "./components/input"; 
+import { useForm, Controller } from "react-hook-form";
 
 type FeedbackForm = {
   name: string;
@@ -18,35 +18,39 @@ export default function Home() {
     reset,
     formState: { errors },
   } = useForm<FeedbackForm>({
-    defaultValues: { name: "", email: "", feedback: "" },
+    defaultValues: {
+      name: "",
+      email: "",
+      feedback: "",
+    },
   });
 
+  const fetchFeedbacks = async () => {
+    const res = await fetch("/api/feedback");
+    const data = await res.json();
+    setFeedbacks(data);
+  };
 
   useEffect(() => {
-    const stored = localStorage.getItem("feedbacks");
-    if (stored) {
-      setFeedbacks(JSON.parse(stored));
-    }
+    fetchFeedbacks();
   }, []);
 
-  
-  useEffect(() => {
-    localStorage.setItem("feedbacks", JSON.stringify(feedbacks));
-  }, [feedbacks]);
 
-  // Handle form submit
-  const onSubmit = (data: FeedbackForm) => {
-    const updated = [...feedbacks, data];
-    setFeedbacks(updated); 
-    reset();
+  const onSubmit = async (data: FeedbackForm) => {
+    await fetch("/api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    reset(); 
+    fetchFeedbacks();
   };
 
   return (
     <main className="flex min-h-screen container-custom mt-20 items-center justify-center p-6 bg-gray-50">
       <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6">
         <h1 className="text-xl font-bold mb-4">Mini Feedback App</h1>
-
-        {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
           <TextInput
             label="Name"
@@ -58,6 +62,7 @@ export default function Home() {
             error={errors.name?.message}
           />
 
+          {/* Email Input */}
           <TextInput
             label="Email"
             name="email"
@@ -66,18 +71,24 @@ export default function Home() {
             control={control}
             rules={{
               required: "Email is required",
-              pattern: { value: /^\S+@\S+$/i, message: "Enter a valid email" },
+              pattern: {
+                value: /^\S+@\S+$/i,
+                message: "Enter a valid email",
+              },
             }}
             error={errors.email?.message}
           />
 
+          {/* Feedback Textarea */}
           <TextAreaInput
-            label="Feedback"
+          label='Feedback'
+
             name="feedback"
-            type="text"
+            type='text'
             control={control}
-            Placeholder="Enter your feedback"
+            Placeholder='Enter Your feedback'
             rules={{ required: "Feedback is required" }}
+          
           />
           {errors.feedback && (
             <p className="text-red-500 text-sm">{errors.feedback.message}</p>
@@ -85,7 +96,7 @@ export default function Home() {
 
           <button
             type="submit"
-            className="w-full bg-primary cursor-pointer text-white py-2 rounded hover:bg-blue-700"
+            className="w-full bg-primary cursor-pointer  text-white py-2 rounded hover:bg-blue-700"
           >
             Submit
           </button>

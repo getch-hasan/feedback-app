@@ -14,4 +14,3 @@ export async function POST(request: Request) {
   feedbacks.push(data);
   return NextResponse.json({ message: "Feedback submitted", data });
 }
-
