@@ -1,6 +1,7 @@
-import { prisma } from "@/app/lib/prisma";
+// app/api/feedback/route.ts
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
- 
+
 // GET all feedbacks
 export async function GET() {
   const feedbacks = await prisma.feedback.findMany({

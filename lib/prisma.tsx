@@ -1,0 +1,20 @@
+// lib/prisma.ts
+import { PrismaClient } from "@prisma/client";
+
+let prisma: PrismaClient;
+
+declare global {
+  // Avoid multiple instances in dev
+  var prisma: PrismaClient | undefined;
+}
+
+if (process.env.NODE_ENV === "production") {
+  prisma = new PrismaClient({ log: ["query"] });
+} else {
+  if (!global.prisma) {
+    global.prisma = new PrismaClient({ log: ["query"] });
+  }
+  prisma = global.prisma;
+}
+
+export default prisma;
