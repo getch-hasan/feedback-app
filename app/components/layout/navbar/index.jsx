@@ -49,11 +49,11 @@ const Navbar = () => {
               className={`${
                 item.name !== "Contact"
                   ? "font-semibold text-black font-poppins text-md leading-7 relative hover:border-none after:absolute after:w-0 after:h-[5px] after:-bottom-1 after:bg-[#79D802] after:transition-all after:duration-200 after:ease-in-out after:rounded-full hover:after:w-full hover:after:left-0"
-                  : "font-semibold text-white font-poppins text-md bg-[#79D802] py-2 rounded-full px-6"
+                  : "font-semibold text-white font-poppins text-md bg-primary py-2 rounded-full px-6"
               }
           ${
             pathName === item.href
-              ? "after:w-full after:left-0 font-bold text-[#79D802] font-poppins"
+              ? "after:w-full after:left-0 font-bold text-primary font-poppins"
               : "after:left-1/2"
           }`}
               aria-labelledby="labeldiv"
