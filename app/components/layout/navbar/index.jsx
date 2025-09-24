@@ -10,7 +10,7 @@ const Navbar = () => {
   const pathName = usePathname();
   const navList = [
     
-    { name: "Home", href: "/home" },
+    { name: "Home", href: "/" },
     { name: "Services", href: "/services" },
     { name: "Reviews", href: "/reviews" },
 
@@ -24,12 +24,12 @@ const Navbar = () => {
   };
 
   return (
-    <div className="w-full  fixed top-0 z-50 h-16 bg-[#f8eded]">
+    <div className="w-full  fixed top-0 z-50 h-20 bg-[#f8eded]">
       <nav className="py-3 flex container-custom mx-auto justify-between items-center font-openSans">
         <Link href={"/"} className="flex items-center md:gap-4 gap-1 ">
           <img
             className="h-14 w-14 ml-4 rounded-full"
-            src="/logo.webp"
+            src="/logo.jpg"
             alt="Logo"
           />
           <h1 className="font-bubblegum text-2xl">Bites</h1>

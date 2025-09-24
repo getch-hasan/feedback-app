@@ -1,9 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import { TextAreaInput, TextInput } from "./components/input"; // adjust if path differs
-import { useForm, Controller } from "react-hook-form";
-import { type } from './../node_modules/path-type/index.d';
-import Placeholder from './../node_modules/react-select/dist/declarations/src/components/Placeholder.d';
+import { TextAreaInput, TextInput } from "./components/input";
+import { useForm } from "react-hook-form";
 
 type FeedbackForm = {
   name: string;
@@ -20,43 +18,36 @@ export default function Home() {
     reset,
     formState: { errors },
   } = useForm<FeedbackForm>({
-    defaultValues: {
-      name: "",
-      email: "",
-      feedback: "",
-    },
+    defaultValues: { name: "", email: "", feedback: "" },
   });
 
-  const fetchFeedbacks = async () => {
-    const res = await fetch("/api/feedback");
-    const data = await res.json();
-    setFeedbacks(data);
-  };
 
   useEffect(() => {
-    fetchFeedbacks();
+    const stored = localStorage.getItem("feedbacks");
+    if (stored) {
+      setFeedbacks(JSON.parse(stored));
+    }
   }, []);
 
-  // handle form submit
-  const onSubmit = async (data: FeedbackForm) => {
-    await fetch("/api/feedback", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+  
+  useEffect(() => {
+    localStorage.setItem("feedbacks", JSON.stringify(feedbacks));
+  }, [feedbacks]);
 
-    reset(); // clear form
-    fetchFeedbacks();
+  // Handle form submit
+  const onSubmit = (data: FeedbackForm) => {
+    const updated = [...feedbacks, data];
+    setFeedbacks(updated); 
+    reset();
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center p-6 bg-gray-50">
+    <main className="flex min-h-screen container-custom mt-20 items-center justify-center p-6 bg-gray-50">
       <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6">
         <h1 className="text-xl font-bold mb-4">Mini Feedback App</h1>
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-          {/* Custom Input with react-hook-form */}
           <TextInput
             label="Name"
             name="name"
@@ -67,7 +58,6 @@ export default function Home() {
             error={errors.name?.message}
           />
 
-          {/* Email Input */}
           <TextInput
             label="Email"
             name="email"
@@ -76,24 +66,18 @@ export default function Home() {
             control={control}
             rules={{
               required: "Email is required",
-              pattern: {
-                value: /^\S+@\S+$/i,
-                message: "Enter a valid email",
-              },
+              pattern: { value: /^\S+@\S+$/i, message: "Enter a valid email" },
             }}
             error={errors.email?.message}
           />
 
-          {/* Feedback Textarea */}
           <TextAreaInput
-          label='Feedback'
-
+            label="Feedback"
             name="feedback"
-            type='text'
+            type="text"
             control={control}
-            Placeholder='Enter Your feedback'
+            Placeholder="Enter your feedback"
             rules={{ required: "Feedback is required" }}
-          
           />
           {errors.feedback && (
             <p className="text-red-500 text-sm">{errors.feedback.message}</p>
